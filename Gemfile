@@ -61,3 +61,10 @@ gem 'haml-rails', '~> 2.0', '>= 2.0.1'
 
 # Flexible authentication solution for Rails with Warden
 gem 'devise', '~> 4.8', '>= 4.8.1'
+
+
+# rspec-rails brings the RSpec testing framework
+group :development, :test do
+  gem 'rspec-rails', '~> 5.0.0'
+  gem "factory_bot_rails"
+end
