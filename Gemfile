@@ -58,3 +58,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # enables Haml as the templating engine
 gem 'haml-rails', '~> 2.0', '>= 2.0.1'
+
+# Flexible authentication solution for Rails with Warden
+gem 'devise', '~> 4.8', '>= 4.8.1'

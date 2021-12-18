@@ -1,0 +1,31 @@
+<%= render 'devise/shared/login_container', title: 'Change your password' do %>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+    <%= f.hidden_field :reset_password_token %>
+
+    <div class="form-floating">      
+      <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: 'form-control' %>
+      <%= f.label :password, "New password (#{@minimum_password_length} characters minimum)" %>
+    </div>
+
+    <div class="form-floating">      
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: 'form-control' %>
+      <%= f.label :password_confirmation, "Confirm new password" %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit "Change my password", class: 'w-100 btn btn-primary' %>
+    </div>
+  <% end %>
+
+  <div class="row w-100">
+    <div class="col-6">
+      <%= link_to "Sign up", new_registration_path(resource_name) %>
+    </div>
+    <div class="col-6">
+      <%= link_to "Login", new_user_session_path, class: 'pull-right' %>
+    </div>
+  </div>
+
+<% end %>

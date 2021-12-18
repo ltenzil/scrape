@@ -10,3 +10,18 @@
         %svg.bi.me-2{:height => "16", :width => "16"}
           %use{"xlink:href" => "#speedometer2"}
         Dashboard
+
+  - if user_signed_in?
+    %hr
+    .dropdown
+      %a#dropdownUser2.d-flex.align-items-center.link-dark.text-decoration-none.dropdown-toggle{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", href: '#'}
+        %img.rounded-circle.me-2{alt: "", height: '32', src: 'https://github.com/ltenzil.png', width: '32'}
+        %strong
+          = fetch_name()
+      %ul.dropdown-menu.text-small.shadow{"aria-labelledby" => "dropdownUser2"}
+        %li
+          %a.dropdown-item{href: edit_user_registration_path} Settings          
+        %li
+          %hr.dropdown-divider/
+        %li        
+          = link_to "Logout", destroy_user_session_path, class: 'dropdown-item', method: :delete
