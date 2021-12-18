@@ -9,7 +9,19 @@
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body>    
+    <div class="container-fluid min-vh-100">
+      <%= render 'layouts/sidebar' %>
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
+        <%= render "layouts/container" do %>
+          <% if notice %>
+            <p class="alert alert-info"><%= notice %></p>
+          <% end %>
+          <div class="middle-content">
+            <%= yield %>
+          </div>
+        <% end %>
+      </main>
+    </div>
   </body>
 </html>
