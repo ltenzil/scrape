@@ -6,23 +6,19 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>    
-    <div class="container-fluid min-vh-100">
-      <%= render 'layouts/sidebar' %>
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
-        <%= render "layouts/container" do %>
-          <% if notice %>
-            <div class="alert alert-warning alert-dismissible fade show">
-              <%= notice %>            
-            </div>
-          <% end %>
-          <div class="middle-content">
-            <%= yield %>
-          </div>
-        <% end %>
+  <body>
+      
+    <div class="container-fluid p-3"> 
+      <%= render 'layouts/sidebar' %>  
+      <main class="col-md-9 ms-sm-auto col-lg-10">
+        <%= render 'layouts/flash' %>
+        <div class="middle-content">
+          <%= yield %>
+        </div>        
       </main>
     </div>
   </body>

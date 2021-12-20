@@ -1,15 +1,15 @@
-.d-flex.flex-column.flex-shrink-0.p-3.bg-light.sidebar
-  %a.d-flex.align-items-center.mb-3.mb-md-0.me-md-auto.link-dark.text-decoration-none{href: root_path}
-    %svg.bi.me-2{:height => "32", :width => "40"}
-      %use{"xlink:href" => "#bootstrap"}
+.sidebar.d-flex.flex-column.p-3.bg-light
+  %a.link-dark.text-decoration-none{href: root_path}
     %span.fs-4 Web Scraper
-  %hr/
+  %hr
   %ul.nav.nav-pills.flex-column.mb-auto
     %li
-      %a.nav-link.link-dark.active{href: root_path}
-        %svg.bi.me-2{:height => "16", :width => "16"}
-          %use{"xlink:href" => "#speedometer2"}
+      %a.nav-link.link-dark{href: root_path}
         Dashboard
+
+    %li
+      %a.nav-link.link-dark{href: keywords_path}
+        Keywords
 
   - if user_signed_in?
     %hr
