@@ -1,0 +1,15 @@
+.col
+  .card{id: keyword.id}
+    .card-body
+      %h5.card-title
+        .fw-normal
+          = keyword.value&.capitalize
+      .card-text
+        .fw-light
+          %small
+            = keyword.stats
+    .card-footer
+      %small.text-muted.fw-light
+        updated on 
+        .pull-right
+          = keyword.updated_at.to_date

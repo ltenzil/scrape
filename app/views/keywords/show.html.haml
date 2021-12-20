@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Value:
+  = @keyword.value
+%p
+  %b Hits:
+  = @keyword.hits
+%p
+  %b Stats:
+  = @keyword.stats
+
+= link_to 'Edit', edit_keyword_path(@keyword)
+\|
+= link_to 'Back', keywords_path
