@@ -1,2 +1,4 @@
-= render 'layouts/form_box', title: 'New keyword' do
-  = render 'form'
+- title = params.has_key?(:bulk) ? 'Bulk Upload' : 'New keyword'
+= render 'layouts/form_box', title: title do
+  .col-6
+    = render 'form'

@@ -17,6 +17,7 @@ module Scrape
     # the framework and any gems in your application.
 
     config.generators.system_tests = nil
+    config.eager_load_paths += %W(#{config.root}/lib/)
 
     config.generators do |g|
       g.test_framework :rspec,
