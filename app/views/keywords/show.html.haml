@@ -1,15 +1,14 @@
-%p#notice= notice
+= render 'layouts/form_box', title: "Keyword: #{titleize(@keyword.value)}" do
+  .col
+    %p
+      %b Value:
+      = titleize(@keyword.value)
+    %p
+      %b Hits:
+      = @keyword.hits
+    %p
+      %b Stats:
+      = @keyword.stats
 
-%p
-  %b Value:
-  = @keyword.value
-%p
-  %b Hits:
-  = @keyword.hits
-%p
-  %b Stats:
-  = @keyword.stats
-
-= link_to 'Edit', edit_keyword_path(@keyword)
-\|
-= link_to 'Back', keywords_path
+    = link_to 'Edit', edit_keyword_path(@keyword), class: "btn btn-primary"
+    = link_to 'Back', keywords_path, class: "btn btn-secondary"

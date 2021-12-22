@@ -18,15 +18,19 @@ module Google
     def search(query)
       return [false, { error: "Nothing to search" }] if query.blank? || !query.is_a?(String)
       begin
-        response = Net::HTTP.get(URI(url(query)))
+        formated_url = url(CGI.escape(query))
+        response     = Net::HTTP.get(URI(formated_url))
         build_results(JSON.parse(response))
       rescue StandardError => e
+        Rails.logger.info "Google::Search Error"
+        Rails.logger.info e.message
         [false, { error: e.message }]
       end
     end
 
     def build_results(response)
       return [false , { error: 'Unable to parse' }] unless response.is_a? Hash
+      return [false, { error: response["error"]["code"]['message'] }] if response["error"]
       hits         = response["searchInformation"]["totalResults"]
       format_hits  = response["searchInformation"]["formattedTotalResults"]
       search_time  = response["searchInformation"]["formattedSearchTime"]

@@ -25,7 +25,8 @@ class KeywordsController < ApplicationController
 
     respond_to do |format|
       if @keyword.errors.blank?
-        format.html { redirect_to keyword_url(@keyword), notice: "Keyword was successfully created." }
+        @keyword.search_google
+        format.html { redirect_to keyword_url(@keyword.id), notice: "Keyword was successfully created." }
         format.json { render :show, status: :created, location: @keyword }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -56,6 +57,29 @@ class KeywordsController < ApplicationController
       format.html { redirect_to keywords_url, notice: "Keyword was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def new_upload
+  end
+
+  def bulk_upload
+    begin
+      contents      = params[:file].read
+      keyword_list = contents.split(',').uniq.map(&:squish)
+      @results = { total: keyword_list.uniq.size }
+      if @results[:total] <= Keyword::LIMIT
+        keywords, failures = Keyword.bulk_search(keyword_list, current_user.id)
+        @results[:keywords] = keywords
+        @results[:failures] = failures
+      else
+        @results[:count_error] =
+          "Search limit is #{Keyword::LIMIT}, Please reduce the keywords and try again"        
+      end
+      debugger
+    rescue StandardError => e
+      flash[:notice] = "Please upload csv file. <br/> Following error raised: #{e.message}"
+    end
+    render "bulk_upload_list"
   end
 
   private

@@ -1,15 +1,9 @@
 = form_for @keyword do |f|
   .mb-3
-    - if params.has_key?(:bulk)
-      = file_field_tag :file, required: true, accept: ".csv"
-      %br
-      %small.alert-warning
-        Please upload file with csv extension
-    - else
-      = f.label :value, class: 'form-label'
-      = f.text_field :value, class: 'form-control'
-      .pull-right
-        = f.object.errors[:value]&.first
+    = f.label :value, class: 'form-label'
+    = f.text_field :value, class: 'form-control', required: true
+    .pull-right
+      = f.object.errors[:value]&.first
   .actions
-    = f.submit 'Save', class: 'btn btn-md btn-primary'
+    = f.submit 'Save', class: 'btn btn-md btn-primary', data: { disable_with: "Saving Keyword... Please wait!!!"}
     = link_to 'Back', keywords_path, class: 'btn btn-md btn-secondary'
