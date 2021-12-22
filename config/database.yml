@@ -20,5 +20,7 @@ test:
   database: scrape_test
 
 production:
-  <<: *default
-  database: scrape_prod
+  adapter: postgresql
+  encoding: unicode
+  url: <%= ENV['DATABASE_URL'] %>
+  timeout: 5000
