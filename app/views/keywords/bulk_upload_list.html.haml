@@ -1,0 +1,56 @@
+.pull-right
+  = link_to 'Bulk Upload', new_upload_keywords_path, class: 'btn btn-sm btn-success'
+  = link_to 'New Keyword', new_keyword_path, class: 'btn btn-sm btn-primary'
+.h3.mb-3.fw-normal
+  Uploaded keywords
+%hr
+
+.col
+
+  .row.row-cols-md-3
+    .col
+      .card.alert.alert-info        
+        = "Total keywords in file: #{@results[:total]}"
+    - if @results[:keywords]
+      .col
+        .card.alert.alert-success
+          = "Successfully created : #{@results[:keywords]&.count} keyword(s)"
+    - if @results[:failures]
+      .col
+        .card.alert.alert-warning
+          = "Failed to search and create : #{@results[:failures]&.count} keyword(s)"
+
+  - unless @results[:keywords].blank?
+    .row.row-cols-1.row-cols-lg-4.row-cols-md-3.g-4
+      = render partial: 'key_card', collection: @results[:keywords], as: :keyword
+    %hr
+
+  - if @results[:count_error]
+    .h5.mb-3.fw-normal
+      Failured search results
+    .col
+      .alert.alert-warning
+        = @results[:count_error]
+        = link_to 'Bulk Upload', new_upload_keywords_path
+
+  - unless @results[:failures].blank?
+    .h5.mb-3.fw-normal
+      Failured search results
+    
+    .col
+      %table.table.table-striped
+        %thead        
+          %tr
+            %th{scope: "col"} #
+            %th Term
+            %th Error
+        %tbody
+          - row_index = 0
+          - @results[:failures].each do |term|
+            %tr
+              %td{scope: 'row'}
+                = (row_index += 1)
+              %td
+                = term[:query]
+              %td
+                = term[:error]

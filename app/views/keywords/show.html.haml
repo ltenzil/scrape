@@ -1,15 +1,35 @@
-%p#notice= notice
+= render 'layouts/form_box', title: "Keyword: #{titleize(@keyword.value)}" do
+  .col
+    %p
+      %b Value:
+      = titleize(@keyword.value)
+    %p
+      %b Hits:
+      = @keyword.hits
+    %p
+      %b Stats:
+      = @keyword.stats
+    - if @keyword.response["error"]
+      %p
+        %b Error:
+        = @keyword.response["error"]
+    - elsif @keyword.response
+      - items = @keyword.response["items"]
+      %div.web-results
+        .fw-light
+          Top Ten Web Search Results: 
+        .col
+          - items&.each do |item|
+            .card
+              .card-body
+                .card-title
+                  %a{href: item["link"]}
+                    = item["title"]
+                .card-text
+                  = item["snippet"]
+            %br
 
-%p
-  %b Value:
-  = @keyword.value
-%p
-  %b Hits:
-  = @keyword.hits
-%p
-  %b Stats:
-  = @keyword.stats
 
-= link_to 'Edit', edit_keyword_path(@keyword)
-\|
-= link_to 'Back', keywords_path
+
+    = link_to 'Edit', edit_keyword_path(@keyword), class: "btn btn-primary"
+    = link_to 'Back', keywords_path, class: "btn btn-secondary"

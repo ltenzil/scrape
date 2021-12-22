@@ -1,0 +1,11 @@
+= render 'layouts/form_box', title: 'Bulk Upload' do
+  .col-6
+    = form_tag bulk_upload_keywords_path, multipart: true do |f|
+      .mb-3        
+        = file_field_tag :file, class: 'form-control', required: true, accept: ".csv"
+        %small.alert-warning
+          = "Please upload file with csv extension, with limit #{Keyword::LIMIT}."
+      .actions
+        = submit_tag 'Save', class: 'btn btn-primary', data: { disable_with: "Uploading keywords... Please wait!!!"}
+        = link_to 'Back', keywords_path, class: 'btn btn-secondary'
+

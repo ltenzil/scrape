@@ -5,4 +5,8 @@ module ApplicationHelper
     current_user.email.split('@').first
   end
 
+  def titleize(value)
+    value.is_a?(String) ? value.titleize : ''
+  end
+
 end

@@ -1,27 +1,26 @@
-.sidebar.d-flex.flex-column.p-3.bg-light
-  %a.link-dark.text-decoration-none{href: root_path}
-    %span.fs-4 Web Scraper
-  %hr
-  %ul.nav.nav-pills.flex-column.mb-auto
-    %li
-      %a.nav-link.link-dark{href: root_path}
-        Dashboard
 
-    %li
-      %a.nav-link.link-dark{href: keywords_path}
-        Keywords
+.sidebar.col-md-3.col-lg-2.d-md-block.bg-light.collapse{id: 'sidebarMenu'}
+  .position-sticky.p-3
+    %ul.nav.nav-pills.flex-column.pt-2
+      %li
+        %a.nav-link.link-dark{href: root_path}
+          Dashboard
+      %li
+        %a.nav-link.link-dark{href: keywords_path}
+          Keywords
 
-  - if user_signed_in?
-    %hr
-    .dropdown
-      %a#dropdownUser2.d-flex.align-items-center.link-dark.text-decoration-none.dropdown-toggle{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", href: '#'}
-        %img.rounded-circle.me-2{alt: "", height: '32', src: 'https://github.com/ltenzil.png', width: '32'}
-        %strong
-          = fetch_name()
-      %ul.dropdown-menu.text-small.shadow{"aria-labelledby" => "dropdownUser2"}
-        %li
-          %a.dropdown-item{href: edit_user_registration_path} Settings          
-        %li
-          %hr.dropdown-divider/
-        %li        
-          = link_to "Logout", destroy_user_session_path, class: 'dropdown-item', method: :delete
+    - if user_signed_in?
+      %hr
+      .dropdown
+        %a#dropdownUser2.d-flex.align-items-center.link-dark.text-decoration-none.dropdown-toggle{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", href: '#'}
+          %img.rounded-circle.me-2{alt: "", height: '32', src: 'https://github.com/ltenzil.png', width: '32'}
+          %strong
+            = fetch_name()
+        %ul.dropdown-menu.text-small.shadow{"aria-labelledby" => "dropdownUser2"}
+          %li
+            %a.dropdown-item{href: edit_user_registration_path} Settings          
+          %li
+            %hr.dropdown-divider
+          %li        
+            = link_to "Logout", destroy_user_session_path, class: 'dropdown-item', method: :delete
+
