@@ -7,8 +7,8 @@ module Google
     def initialize
       google     = Rails.application.credentials.config[:google]
       @host      = google[:host]
-      @cx_client = google[:cx]
-      @app_key   = google[:key]
+      @cx_client = ENV['CX'] || google[:ocx]
+      @app_key   = ENV['GKEY'] || google[:okey]
     end
 
     def url(query)
@@ -16,7 +16,7 @@ module Google
     end
 
     def search(query)
-      return [false, { error: "Nothing to search" }] if query.blank? || !query.is_a?(String)
+      return [false, response: { error: "Nothing to search" }] if query.blank? || !query.is_a?(String)
       begin
         formated_url = url(CGI.escape(query))
         response     = Net::HTTP.get(URI(formated_url))
@@ -29,8 +29,8 @@ module Google
     end
 
     def build_results(response)
-      return [false , { error: 'Unable to parse' }] unless response.is_a? Hash
-      return [false, { error: response["error"]["code"]['message'] }] if response["error"]
+      return [false, response: { error: 'Unable to parse' }] unless response.is_a? Hash
+      return [false, response: { error: response["error"]['message'] }] if response["error"]
       hits         = response["searchInformation"]["totalResults"]
       format_hits  = response["searchInformation"]["formattedTotalResults"]
       search_time  = response["searchInformation"]["formattedSearchTime"]

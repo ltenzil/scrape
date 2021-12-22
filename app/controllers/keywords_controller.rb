@@ -1,9 +1,11 @@
 class KeywordsController < ApplicationController
+  skip_before_action :authenticate_user!, only: :index
   before_action :set_keyword, only: %i[ show edit update destroy ]
+
 
   # GET /keywords or /keywords.json
   def index
-    @keywords = Keyword.order(hits: :desc)
+    @keywords = Keyword.search(params)
   end
 
   # GET /keywords/1 or /keywords/1.json
@@ -40,7 +42,7 @@ class KeywordsController < ApplicationController
     respond_to do |format|
       if @keyword.update(keyword_params)
         @keyword.search_google
-        format.html { redirect_to keyword_url(@keyword), notice: "Keyword was successfully updated." }
+        format.html { redirect_to keyword_url(@keyword.id), notice: "Keyword was successfully updated." }
         format.json { render :show, status: :ok, location: @keyword }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -75,7 +77,6 @@ class KeywordsController < ApplicationController
         @results[:count_error] =
           "Search limit is #{Keyword::LIMIT}, Please reduce the keywords and try again"        
       end
-      debugger
     rescue StandardError => e
       flash[:notice] = "Please upload csv file. <br/> Following error raised: #{e.message}"
     end

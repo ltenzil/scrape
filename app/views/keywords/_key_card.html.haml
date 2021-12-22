@@ -3,7 +3,7 @@
     .card-body
       %h5.card-title
         .fw-normal
-          = titleize(keyword.value)
+          = link_to titleize(keyword.value), keyword, class: 'text-decoration-none'
       .card-text
         .fw-light
           %small

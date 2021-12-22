@@ -1,3 +1,6 @@
+.pull-right
+  = link_to 'Bulk Upload', new_upload_keywords_path, class: 'btn btn-sm btn-success'
+  = link_to 'New Keyword', new_keyword_path, class: 'btn btn-sm btn-primary'
 .h3.mb-3.fw-normal
   Uploaded keywords
 %hr
@@ -34,7 +37,7 @@
     .h5.mb-3.fw-normal
       Failured search results
     
-    .col-6
+    .col
       %table.table.table-striped
         %thead        
           %tr
