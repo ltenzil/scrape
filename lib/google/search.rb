@@ -6,9 +6,9 @@ module Google
 
     def initialize
       google     = Rails.application.credentials.config[:google]
-      @host      = google[:host]
-      @cx_client = ENV['CX'] || google[:ocx]
-      @app_key   = ENV['GKEY'] || google[:okey]
+      @host      = ENV['GHOST'] || google[:host]
+      @cx_client = ENV['GCX']   || google[:ocx]
+      @app_key   = ENV['GKEY']  || google[:okey]
     end
 
     def url(query)
