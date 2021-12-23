@@ -1,6 +1,6 @@
 class KeywordsController < ApplicationController
   skip_before_action :authenticate_user!, only: :index
-  before_action :set_keyword, only: %i[ show edit update destroy ]
+  before_action :set_keyword, only: %i[ edit update destroy ]
 
 
   # GET /keywords or /keywords.json
@@ -8,8 +8,14 @@ class KeywordsController < ApplicationController
     @keywords = Keyword.search(params)
   end
 
+  # GET /keywords or /keywords.json
+  def user_keywords
+    @keywords = Keyword.search(params.merge(user_id: current_user.id))
+  end
+
   # GET /keywords/1 or /keywords/1.json
   def show
+    @keyword = Keyword.find(params[:id])
   end
 
   # GET /keywords/new

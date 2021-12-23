@@ -5,9 +5,14 @@
       %li
         %a.nav-link.link-dark{href: root_path}
           Dashboard
-      %li
-        %a.nav-link.link-dark{href: keywords_path}
-          Keywords
+      - if user_signed_in?
+        %li
+          %a.nav-link.link-dark{href: user_keywords_keywords_path}
+            My Keywords
+      - else
+        %li
+          = link_to "Sign up", new_user_registration_path, class: 'nav-link link-dark'
+          = link_to "Login", new_user_session_path, class: 'nav-link link-dark'
 
     - if user_signed_in?
       %hr

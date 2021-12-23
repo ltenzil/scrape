@@ -77,7 +77,7 @@ RSpec.describe "/keywords", type: :request do
 
     context "with invalid parameters" do
       before :each do
-        keyword = current_user.keywords.create! valid_attributes.merge(value: 'Cricket')
+        keyword = current_user.keywords.create! valid_attributes.merge(value: 'Cricket')        
       end
       it "does not create a new Keyword" do
         expect {
@@ -99,14 +99,14 @@ RSpec.describe "/keywords", type: :request do
       }
 
       it "updates the requested keyword" do
-        keyword = current_user.keywords.create! valid_attributes.merge(value: 'south india')
+        keyword = current_user.keywords.create! valid_attributes.merge(value: 'south india')        
         patch keyword_url(keyword), params: { keyword: new_attributes }
         keyword.reload
         expect(keyword.value).to eq('south india update')
       end
 
       it "redirects to the keyword" do
-        keyword = current_user.keywords.create! valid_attributes.merge(value: 'north india')
+        keyword = current_user.keywords.create! valid_attributes.merge(value: 'north india')        
         patch keyword_url(keyword), params: { keyword: new_attributes }
         keyword.reload
         expect(response).to redirect_to(keyword_url(keyword))
