@@ -1,5 +1,4 @@
 .col
-  = render 'keywords/header', path: keywords_path, title: 'Keywords'
-
+  = render 'keywords/header', path: user_keywords_keywords_path, title: 'My Keywords'
 .row.row-cols-1.row-cols-lg-4.row-cols-md-3.g-4
   = render partial: 'key_card', collection: @keywords, as: :keyword

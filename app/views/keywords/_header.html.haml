@@ -1,0 +1,9 @@
+.pull-right
+  = link_to 'Bulk Upload', new_upload_keywords_path, class: 'btn btn-sm btn-success'
+  = link_to 'New Keyword', new_keyword_path, class: 'btn btn-sm btn-primary'
+.col
+  .h3.mb-3.fw-normal 
+    = "#{title} : #{@keywords&.count}"
+  .search_form
+    = render 'keywords/search_form', path: path
+%hr

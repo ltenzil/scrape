@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   
   resources :keywords do
     collection do
+      get 'user_keywords'
       get 'new_upload'
       post 'bulk_upload'
       get 'bulk_upload',to: 'keywords#new_upload'
