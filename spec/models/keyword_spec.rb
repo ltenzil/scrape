@@ -8,10 +8,10 @@ RSpec.describe Keyword, type: :model do
   let(:dummy_json) {
     {
       hits: 1000000,
-      html: ["<div>Found </div>"],
+      html: ['<div>Found </div>'],
       links: ["<a href='google.com'>Results</>"],
       search_time: '0.45',
-      stats: "About 1,000,000 results in (0.45 seconds)",
+      stats: 'About 1,000,000 results in (0.45 seconds)',
       next_page: [],
       response: {
         next_page: [],
@@ -21,7 +21,7 @@ RSpec.describe Keyword, type: :model do
   }
 
   let(:quota_error) {
-    { response: { error: "Quota utilised error" } }
+    { response: { error: 'Quota utilised error' } }
   }
 
   describe '#squish_value' do
@@ -73,7 +73,7 @@ RSpec.describe Keyword, type: :model do
       expect(failures).to be_empty
     end
 
-    it 'should fetch and save results' do
+    it 'should return Quota utilised error' do
       queries = ['Elixir']
       allow_any_instance_of(Google::Search).to receive(:search).with('Elixir').and_return([false, quota_error])      
       keywords, failures = Keyword.bulk_search(queries, user.id)
@@ -81,6 +81,5 @@ RSpec.describe Keyword, type: :model do
       expect(failures).to eq([{error: "Quota utilised error", query: "Elixir"}])
     end
   end
-
 
 end

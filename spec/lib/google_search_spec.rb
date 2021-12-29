@@ -37,10 +37,10 @@ describe Google::Search do
     let(:dummy_json) {
       {
         hits: 1000000,
-        html: ["<div>Found </div>"],
+        html: ['<div>Found </div>'],
         links: ["<a href='google.com'>Results</>"],
         search_time: '0.45',
-        stats: "About 1,000,000 results in (0.45 seconds)",
+        stats: 'About 1,000,000 results in (0.45 seconds)',
         next_page: [],
         response: {
           next_page: [],
@@ -50,7 +50,7 @@ describe Google::Search do
     }
 
     let(:quota_error) {
-      { response: { error: "Quota utilised error" } }
+      { response: { error: 'Quota utilised error' } }
     }
 
     it "should be able to call search" do
