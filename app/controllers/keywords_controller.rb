@@ -1,6 +1,6 @@
 class KeywordsController < ApplicationController
   skip_before_action :authenticate_user!, only: :index
-  before_action :set_keyword, only: %i[ edit update destroy ]
+  before_action :set_keyword, only: %i[edit update destroy]
 
 
   # GET /keywords or /keywords.json
@@ -90,13 +90,15 @@ class KeywordsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_keyword
-      @keyword = current_user.find_keyword(params[:id])
-    end
+  
+  # Use callbacks to share common setup or constraints between actions.
+  def set_keyword
+    @keyword = current_user.find_keyword(params[:id])
+  end
 
-    # Only allow a list of trusted parameters through.
-    def keyword_params
-      params.require(:keyword).permit(:value, :hits, :stats)
-    end
+  # Only allow a list of trusted parameters through.
+  def keyword_params
+    params.require(:keyword).permit(:value, :hits, :stats)
+  end
+
 end
