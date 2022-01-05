@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :keyword do
-    value { "MyString" }
+    value { 'MyString' }
     hits { rand(0..1000) }
-    stats { "MyString" }
+    stats { 'MyString' }
   end
 end

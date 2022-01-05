@@ -1,8 +1,7 @@
+# Keyword model
 class Keyword < ApplicationRecord
-  validates :value, presence: true, uniqueness: true
-  has_many :user_keywords, dependent: :destroy
-  has_many :users, through: :user_keywords
-
+  validates :value, presence: true
+  belongs_to :user
   before_save :squish_value
 
   LIMIT = 20
@@ -11,25 +10,25 @@ class Keyword < ApplicationRecord
     self.value = value.squish
   end
 
-  def self.search(options={})
-    joins(user_keywords_sym(options))
-    .where(user_query(options))
-    .where("value ilike ?", "%#{options[:value]}%")
-    .order(hits: :desc)
+  def self.search(options = {})
+    like_value(options)
+      .where(user_query(options))
+      .order(hits: :desc)
   end
 
-  def self.user_keywords_sym(options={})
-    options[:user_id].blank? ? nil : (:user_keywords)
+  def self.like_value(options = {})
+    return where(nil) if options[:value].blank?
+
+    where('value ilike ?', "%#{options[:value]}%")
   end
 
-  def self.user_query(options={})
-    return nil if options[:user_id].blank?
-    { user_keywords: { user_id: options[:user_id] } }
+  def self.user_query(options = {})
+    options[:user_id].blank? ? nil : { user_id: options[:user_id] }
   end
 
   def search_google
     google = Google::Search.new
-    status, response = google.search(value)
+    _status, response = google.search(value)
     update(hits: response[:hits], stats: response[:stats],
            response: response[:response])
   end
@@ -42,7 +41,7 @@ class Keyword < ApplicationRecord
     queries.each do |query|
       status, response = google.search(query)
       if status
-        keyword = user.keywords.find_or_create_by(value: query.squish.downcase)
+        keyword = user.keywords.create(value: query.squish.downcase)
         keyword.update(hits: response[:hits], stats: response[:stats],
           response: response[:response])
         keywords << keyword

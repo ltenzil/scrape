@@ -2,7 +2,6 @@ class KeywordsController < ApplicationController
   skip_before_action :authenticate_user!, only: :index
   before_action :set_keyword, only: %i[edit update destroy]
 
-
   # GET /keywords or /keywords.json
   def index
     @keywords = Keyword.search(params)
@@ -24,17 +23,16 @@ class KeywordsController < ApplicationController
   end
 
   # GET /keywords/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /keywords or /keywords.json
   def create
-    @keyword = current_user.keywords.create(keyword_params)
+    @keyword = Keyword.new(keyword_params.merge({ user_id: current_user.id }))
 
     respond_to do |format|
-      if @keyword.errors.blank?
+      if @keyword.save
         @keyword.search_google
-        format.html { redirect_to keyword_url(@keyword.id), notice: "Keyword was successfully created." }
+        format.html { redirect_to keyword_url(@keyword.id), notice: 'Keyword was successfully created.' }
         format.json { render :show, status: :created, location: @keyword }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -48,7 +46,7 @@ class KeywordsController < ApplicationController
     respond_to do |format|
       if @keyword.update(keyword_params)
         @keyword.search_google
-        format.html { redirect_to keyword_url(@keyword.id), notice: "Keyword was successfully updated." }
+        format.html { redirect_to keyword_url(@keyword.id), notice: 'Keyword was successfully updated.' }
         format.json { render :show, status: :ok, location: @keyword }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -62,17 +60,16 @@ class KeywordsController < ApplicationController
     @keyword.destroy
 
     respond_to do |format|
-      format.html { redirect_to keywords_url, notice: "Keyword was successfully destroyed." }
+      format.html { redirect_to keywords_url, notice: 'Keyword was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
-  def new_upload
-  end
+  def new_upload; end
 
   def bulk_upload
     begin
-      contents      = params[:file].read
+      contents     = params[:file].read
       keyword_list = contents.split(',').uniq.map(&:squish)
       @results = { total: keyword_list.uniq.size }
       if @results[:total] <= Keyword::LIMIT
@@ -81,19 +78,19 @@ class KeywordsController < ApplicationController
         @results[:failures] = failures
       else
         @results[:count_error] =
-          "Search limit is #{Keyword::LIMIT}, Please reduce the keywords and try again"        
+          "Search limit is #{Keyword::LIMIT}, Please reduce the keywords and try again"
       end
     rescue StandardError => e
       flash[:notice] = "Please upload csv file. <br/> Following error raised: #{e.message}"
     end
-    render "bulk_upload_list"
+    render 'bulk_upload_list'
   end
 
   private
-  
+
   # Use callbacks to share common setup or constraints between actions.
   def set_keyword
-    @keyword = current_user.find_keyword(params[:id])
+    @keyword = current_user.keywords.find_by(id: params[:id])
   end
 
   # Only allow a list of trusted parameters through.
