@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
 
-  it { should have_many(:user_keywords) }
   it { should have_many(:keywords) }
   
 
@@ -20,7 +19,7 @@ RSpec.describe User, type: :model do
     user = create(:user)
     new_keyword = build(:keyword)
     keyword = user.keywords.create(new_keyword.attributes)
-    user_keyword = user.find_keyword(keyword.id)
+    user_keyword = user.keywords.find_by(id: keyword.id)
     expect(user_keyword).to eq(keyword)
   end
 end

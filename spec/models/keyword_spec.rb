@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Keyword, type: :model do
 
-  it { should have_many(:user_keywords) }
-  it { should have_many(:users) }
+  it { should belong_to(:user) }
+
+  let(:user) { create(:user) }
 
   let(:dummy_json) {
     {
@@ -26,31 +27,21 @@ RSpec.describe Keyword, type: :model do
 
   describe '#squish_value' do
     it 'should remove additional space in keyword' do
-      keyword = create(:keyword, value: ' hello   world   ')
+      keyword = create(:keyword, value: ' hello   world   ', user_id: user.id)
       expect(keyword.value).to eq('hello world')
-    end
-  end
-
-  describe '.user_keywords_sym' do
-    it 'should return :user_keywords when user_id is present' do
-      expect(Keyword.user_keywords_sym({user_id: 1})).to eq(:user_keywords)
-    end
-
-    it 'should return nil when no user_id' do
-      expect(Keyword.user_keywords_sym({})).to eq(nil)
     end
   end
 
   describe '#search_google' do
     it 'should fetch results and update' do
-      keyword = create(:keyword, value: 'ipad')
+      keyword = create(:keyword, value: 'ipad', user_id: user.id)
       allow_any_instance_of(Google::Search).to receive(:search).with(keyword.value).and_return([true, dummy_json])      
       keyword.search_google
       expect(keyword.response).to eq(dummy_json[:response].with_indifferent_access)
     end
 
     it 'should fetch results and update even when error' do
-      keyword = create(:keyword, value: 'ipad')
+      keyword = create(:keyword, value: 'ipad', user_id: user.id)
       allow_any_instance_of(Google::Search).to receive(:search).with(keyword.value).and_return([false, quota_error])
       keyword.search_google
       expect(keyword.response).to eq(quota_error[:response].with_indifferent_access)

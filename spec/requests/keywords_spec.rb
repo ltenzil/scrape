@@ -21,7 +21,7 @@ RSpec.describe "/keywords", type: :request do
   }
 
   let(:invalid_attributes) {
-    build(:keyword, value: "Cricket").attributes
+    build(:keyword, value: '').attributes
   }
 
   let(:current_user) { create(:user) }
