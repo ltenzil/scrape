@@ -70,8 +70,8 @@ class KeywordsController < ApplicationController
   def bulk_upload
     begin
       contents     = params[:file].read
-      keyword_list = contents.split(',').uniq.map(&:squish)
-      @results = { total: keyword_list.uniq.size }
+      keyword_list = contents.split(/[\r\n,]+/).map(&:squish)
+      @results = { total: keyword_list.size, keywords: [], failures: [] }
       if @results[:total] <= Keyword::LIMIT
         keywords, failures = Keyword.bulk_search(keyword_list, current_user.id)
         @results[:keywords] = keywords
@@ -81,6 +81,7 @@ class KeywordsController < ApplicationController
           "Search limit is #{Keyword::LIMIT}, Please reduce the keywords and try again"
       end
     rescue StandardError => e
+      @results = { total: 0, keywords: [], failures: [] } if @results.nil?
       flash[:notice] = "Please upload csv file. <br/> Following error raised: #{e.message}"
     end
     render 'bulk_upload_list'
