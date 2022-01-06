@@ -31,10 +31,14 @@ module Google
 
     def bulk_search(queries)
       bulk_results = {}
+      threads = []
       queries.each do |query|
-        status, result      = search(query)
-        bulk_results[query] = { status: status }.merge(result)
+        threads << Thread.new do
+          status, result      = search(query)
+          bulk_results[query] = { status: status }.merge(result)
+        end
       end
+      threads.map(&:join)
       bulk_results
     end
 
