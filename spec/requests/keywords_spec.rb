@@ -53,6 +53,13 @@ RSpec.describe "/keywords", type: :request do
     end
   end
 
+  describe "GET /new_upload" do
+    it "renders a successful response" do
+      get new_upload_keywords_path
+      expect(response).to be_successful
+    end
+  end
+
   describe "GET /edit" do
     it "render a successful response" do
       keyword = current_user.keywords.create! valid_attributes.merge(value: 'Football')
@@ -126,6 +133,31 @@ RSpec.describe "/keywords", type: :request do
       keyword = current_user.keywords.create! valid_attributes.merge(value: 'Austria')
       delete keyword_url(keyword)
       expect(response).to redirect_to(keywords_url)
+    end
+  end
+
+  describe "Bulk Upload /bulk_upload" do
+    context "while uploading csv file" do
+      before :each do
+        @file = fixture_file_upload("#{Rails.root}/public/keyword_1.csv")
+      end
+
+      it "should render successful response" do
+        post bulk_upload_keywords_path, params: { file: @file }
+        expect(response).to be_successful
+      end
+
+      it "should parse csv" do
+        post bulk_upload_keywords_path, params: { file: @file }
+        expect(response.body.to_s).to include('Nas')
+      end
+    end
+
+    context 'when no file' do
+      it "should raise Standard Error" do
+        post bulk_upload_keywords_path, params: { file: nil }
+        expect(flash[:notice]).to match(/Please upload csv file */)
+      end
     end
   end
 end
