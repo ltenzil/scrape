@@ -17,5 +17,4 @@ class CsvService
     end
     queries
   end
-
 end

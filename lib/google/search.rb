@@ -1,7 +1,6 @@
 require 'net/http'
 
 module Google
-
   class Search
     attr_reader :host, :cx_client, :app_key
 
@@ -72,5 +71,4 @@ module Google
       }
     end
   end
-
 end
