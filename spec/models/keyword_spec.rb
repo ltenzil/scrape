@@ -32,45 +32,4 @@ RSpec.describe Keyword, type: :model do
     end
   end
 
-  describe '#search_google' do
-    it 'should fetch results and update' do
-      keyword = create(:keyword, value: 'ipad', user_id: user.id)
-      allow_any_instance_of(Google::Search).to receive(:search).with(keyword.value).and_return([true, dummy_json])      
-      keyword.search_google
-      expect(keyword.response).to eq(dummy_json[:response].with_indifferent_access)
-    end
-
-    it 'should fetch results and update even when error' do
-      keyword = create(:keyword, value: 'ipad', user_id: user.id)
-      allow_any_instance_of(Google::Search).to receive(:search).with(keyword.value).and_return([false, quota_error])
-      keyword.search_google
-      expect(keyword.response).to eq(quota_error[:response].with_indifferent_access)
-    end
-  end
-
-  describe '.bulk_search' do
-    let(:user) { create(:user) }
-    before :each do      
-      allow(Google::Search).to receive(:new).and_call_original
-    end
-    
-    it 'should fetch and save results' do
-      queries = ['Ruby']         
-      allow_any_instance_of(Google::Search).to receive(:search).with('Ruby').and_return([true, dummy_json])      
-      keywords, failures = Keyword.bulk_search(queries, user.id)
-      expect(Keyword.last.value).to eq('ruby')
-      expect(Keyword.last.hits).to eq(1000000)
-      expect(keywords).to include(Keyword.last)
-      expect(failures).to be_empty
-    end
-
-    it 'should return Quota utilised error' do
-      queries = ['Elixir']
-      allow_any_instance_of(Google::Search).to receive(:search).with('Elixir').and_return([false, quota_error])      
-      keywords, failures = Keyword.bulk_search(queries, user.id)
-      expect(keywords).to be_empty
-      expect(failures).to eq([{error: "Quota utilised error", query: "Elixir"}])
-    end
-  end
-
 end

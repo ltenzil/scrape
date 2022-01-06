@@ -26,30 +26,4 @@ class Keyword < ApplicationRecord
     options[:user_id].blank? ? nil : { user_id: options[:user_id] }
   end
 
-  def search_google
-    google = Google::Search.new
-    _status, response = google.search(value)
-    update(hits: response[:hits], stats: response[:stats],
-           response: response[:response])
-  end
-
-  def self.bulk_search(queries, user_id)
-    user = User.find_by_id(user_id)
-    keywords, failures = [], []
-    return [keywords, failures] if user.blank? || !queries.is_a?(Array)
-    google = Google::Search.new
-    queries.each do |query|
-      status, response = google.search(query)
-      if status
-        keyword = user.keywords.create(value: query.squish.downcase)
-        keyword.update(hits: response[:hits], stats: response[:stats],
-          response: response[:response])
-        keywords << keyword
-      else
-        failures << { query: query, error: response[:response][:error] }
-      end
-    end
-    [keywords.uniq.compact, failures.uniq.compact]
-  end
-
 end
