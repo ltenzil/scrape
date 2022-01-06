@@ -2,8 +2,10 @@
   .mb-3
     = f.label :value, class: 'form-label'
     = f.text_field :value, class: 'form-control', required: true
-    .pull-right
-      = f.object.errors[:value]&.first
+    %small.pull-right
+      .alert-danger.p-1
+        = f.object.errors[:value]&.first
+      %br
   .actions
     = f.submit 'Save', class: 'btn btn-md btn-primary', data: { disable_with: "Saving Keyword... Please wait!!!"}
     = link_to 'Back', keywords_path, class: 'btn btn-md btn-secondary'

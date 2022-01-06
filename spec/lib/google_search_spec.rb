@@ -34,9 +34,10 @@ describe Google::Search do
       "https://customsearch.googleapis.com/customsearch/v1??cx=cx_value&key=value&q=term"
     }
 
-    let(:dummy_json) {
+    let(:ipad_result) do
       {
-        hits: 1000000,
+        value: 'ipad',
+        hits: 1_000_000,
         html: ['<div>Found </div>'],
         links: ["<a href='google.com'>Results</>"],
         search_time: '0.45',
@@ -47,7 +48,27 @@ describe Google::Search do
           items: []
         }
       }
-    }
+    end
+
+    let(:ruby_result) do
+      {
+        value: 'ruby',
+        hits: 1_050_000,
+        html: ['<div>Found </div>'],
+        links: ["<a href='google.com'>Results</>"],
+        search_time: '0.5',
+        stats: 'About 1,050,000 results in (0.5 seconds)',
+        next_page: [],
+        response: {
+          next_page: [],
+          items: []
+        }
+      }
+    end
+
+    let(:bulk_response) do
+      {'ipad' => ipad_result, 'ruby' => ruby_result}
+    end
 
     let(:quota_error) {
       { response: { error: 'Quota utilised error' } }
@@ -58,9 +79,19 @@ describe Google::Search do
       subject.search('ipad')
     end
 
+    it "should be able to call bulk_search" do
+      expect(subject).to receive(:bulk_search).with(['ipad', 'ruby'])
+      subject.bulk_search(['ipad', 'ruby'])
+    end
+
     it "should receive results" do
-      allow_any_instance_of(subject.class).to receive(:search).with('ipad').and_return([true, dummy_json])
-      expect(subject.search('ipad')).to eq([true, dummy_json])
+      allow_any_instance_of(subject.class).to receive(:search).with('ipad').and_return([true, ipad_result])
+      expect(subject.search('ipad')).to eq([true, ipad_result])
+    end
+
+    it "should receive bulk results" do
+      allow_any_instance_of(subject.class).to receive(:bulk_search).with(['ipad', 'ruby']).and_return(bulk_response)
+      expect(subject.bulk_search(['ipad', 'ruby'])).to eq(bulk_response)
     end
 
     it "should receive error when quota utilized" do

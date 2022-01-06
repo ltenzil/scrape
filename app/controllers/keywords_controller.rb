@@ -19,7 +19,7 @@ class KeywordsController < ApplicationController
 
   # GET /keywords/new
   def new
-    @keyword = current_user.keywords.new
+    @keyword = Keyword.new
   end
 
   # GET /keywords/1/edit
@@ -27,11 +27,9 @@ class KeywordsController < ApplicationController
 
   # POST /keywords or /keywords.json
   def create
-    @keyword = Keyword.new(keyword_params.merge({ user_id: current_user.id }))
-
+    @keyword = keyword_service.search_and_save(keyword_params[:value])
     respond_to do |format|
-      if @keyword.save
-        @keyword.search_google
+      if @keyword.persisted?
         format.html { redirect_to keyword_url(@keyword.id), notice: 'Keyword was successfully created.' }
         format.json { render :show, status: :created, location: @keyword }
       else
@@ -45,7 +43,7 @@ class KeywordsController < ApplicationController
   def update
     respond_to do |format|
       if @keyword.update(keyword_params)
-        @keyword.search_google
+        keyword_service.search_and_update(@keyword)
         format.html { redirect_to keyword_url(@keyword.id), notice: 'Keyword was successfully updated.' }
         format.json { render :show, status: :ok, location: @keyword }
       else
@@ -69,11 +67,10 @@ class KeywordsController < ApplicationController
 
   def bulk_upload
     begin
-      contents     = params[:file].read
-      keyword_list = contents.split(/[\r\n,]+/).map(&:squish)
-      @results = { total: keyword_list.size, keywords: [], failures: [] }
+      queries  = CsvService.new(file: params[:file]).read_file
+      @results = { total: queries.size, keywords: [], failures: [] }
       if @results[:total] <= Keyword::LIMIT
-        keywords, failures = Keyword.bulk_search(keyword_list, current_user.id)
+        keywords, failures = keyword_service.bulk_search_and_save(queries)
         @results[:keywords] = keywords
         @results[:failures] = failures
       else
@@ -97,6 +94,10 @@ class KeywordsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def keyword_params
     params.require(:keyword).permit(:value, :hits, :stats)
+  end
+
+  def keyword_service
+    KeywordService.new(user: current_user)
   end
 
 end

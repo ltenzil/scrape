@@ -70,22 +70,34 @@ RSpec.describe "/keywords", type: :request do
 
   describe "POST /create" do
     context "with valid parameters" do
-      it "creates a new Keyword" do
-        expect {
-          post keywords_url, params: { keyword: valid_attributes.merge(value: 'india') }
-        }.to change(Keyword, :count).by(1)
+      let(:ipad_result) do
+        {
+          status: true,
+          value: 'ipad',
+          hits: 1_000_000,
+          html: ['<div>Found </div>'],
+          links: ["<a href='google.com'>Results</>"],
+          search_time: '0.45',
+          stats: 'About 1,000,000 results in (0.45 seconds)',
+          next_page: [],
+          response: {
+            next_page: [],
+            items: []
+          }
+        }
       end
-
-      it "redirects to the created keyword" do
-        post keywords_url, params: { keyword: valid_attributes.merge(value: 'thailand') }
-        expect(response).to redirect_to(keyword_url(Keyword.last))
+      before :each do
+        allow(Google::Search).to receive(:new).and_call_original
+      end
+      it "creates a new Keyword" do
+        allow_any_instance_of(Google::Search).to receive(:search).with('ipad').and_return([true, ipad_result])
+        expect {
+          post keywords_url, params: { keyword: valid_attributes.merge(value: 'ipad') }
+        }.to change(Keyword, :count).by(1)
       end
     end
 
     context "with invalid parameters" do
-      before :each do
-        keyword = current_user.keywords.create! valid_attributes.merge(value: 'Cricket')        
-      end
       it "does not create a new Keyword" do
         expect {
           post keywords_url, params: { keyword: invalid_attributes }
@@ -154,9 +166,9 @@ RSpec.describe "/keywords", type: :request do
     end
 
     context 'when no file' do
-      it "should raise Standard Error" do
+      it "should not create keywords" do
         post bulk_upload_keywords_path, params: { file: nil }
-        expect(flash[:notice]).to match(/Please upload csv file */)
+        expect(response.body).to include('created : 0 keyword(s)')
       end
     end
   end
