@@ -1,6 +1,5 @@
 # service file to perform search and create keywords
 class KeywordService
-
   attr_reader :user, :google_client
 
   def initialize(user:)
@@ -19,6 +18,7 @@ class KeywordService
   def search_and_save(query)
     status, response = search_google(query)
     return add_errors(query, response) unless status
+
     create_keyword(response)
   end
 
@@ -66,5 +66,4 @@ class KeywordService
       response: response[:response]
     }
   end
-
 end
